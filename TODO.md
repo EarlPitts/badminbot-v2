@@ -1,0 +1,3 @@
+- Error handling
+- Allow others to use the bot commands
+- Save last poll for querying the results later
