@@ -9,6 +9,7 @@ from utils import next_week
 
 TOKEN = os.environ["TOKEN"]
 CHAN_ID = int(os.environ["CHAN_ID"])
+ADMIN = int(os.environ["ADMIN"])
 
 UTC_2 = timezone(timedelta(hours=2))
 JOB_TIME = time(9,0,tzinfo=UTC_2)
@@ -45,10 +46,11 @@ class MyBot(commands.Bot):
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = MyBot(command_prefix='> ', intents=intents)
+bot = MyBot(command_prefix='!', intents=intents)
 
 @bot.command()
-async def ping(ctx):
-    await bot.send_poll(force=True)
+async def poll(ctx):
+    if ctx.message.author.id == ADMIN:
+        await bot.send_poll(force=True)
 
 bot.run(TOKEN)
