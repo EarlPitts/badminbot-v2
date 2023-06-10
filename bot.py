@@ -14,6 +14,9 @@ UTC_2 = timezone(timedelta(hours=2))
 JOB_TIME = time(9,0,tzinfo=UTC_2)
 
 class MyBot(commands.Bot):
+    """
+    Sets up bot object (mainly for defining recurrent tasks)
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -26,8 +29,8 @@ class MyBot(commands.Bot):
         print('------')
 
     @tasks.loop(time=JOB_TIME)
-    async def send_poll(self):
-        if date.today().weekday() == 4: # Send the poll only on Fridays
+    async def send_poll(self, force=False):
+        if date.today().weekday() == 4 or force is True: # Send the poll only on Fridays
             channel = self.get_channel(CHAN_ID)
             week_num, days = next_week(date.today())
             title = f'Tollas (hét #{week_num})'
@@ -46,7 +49,6 @@ bot = MyBot(command_prefix='> ', intents=intents)
 
 @bot.command()
 async def ping(ctx):
-    await ctx.send('pong')
-
+    await bot.send_poll(force=True)
 
 bot.run(TOKEN)
