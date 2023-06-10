@@ -1,5 +1,6 @@
-import datetime
+from datetime import time, datetime, timedelta
 import json
+
 import requests
 
 API_ENDPOINT = 'https://api.strawpoll.com/v3/polls'
@@ -24,13 +25,20 @@ def create_poll(title, days, timezone):
             }
 
 def create_events(day, timezone):
-    time_slots = range(FIRST_HOUR, LAST_HOUR + 1)
-    return map(lambda slot : create_event(day, slot, timezone), time_slots)
+    """
+    Creates the events for a given day
+    """
+    create_slot = lambda h: time(h, 0, tzinfo=timezone)
+    time_slots = map(create_slot, range(FIRST_HOUR, LAST_HOUR + 1))
+    return map(lambda slot : create_event(day, slot), time_slots)
 
-def create_event(day, hour, timezone):
-    date_with_time = datetime.datetime.combine(day, datetime.time(0,0, tzinfo=timezone))
-    offset = datetime.timedelta(hours=hour)
-    duration = datetime.timedelta(hours=1)
+def create_event(day, hour):
+    """
+    Creates a single event option in the poll
+    """
+    date_with_time = datetime.combine(day, hour)
+    offset = timedelta(hours=hour)
+    duration = timedelta(hours=1) # Length of each option
     start = date_with_time + offset
     end = date_with_time + offset + duration
     return {
@@ -41,6 +49,10 @@ def create_event(day, hour, timezone):
 
 
 def send_poll_req(f, poll):
+    """
+    Sends the poll request
+    f is the function that will be called with the response
+    """
     poll_json = json.dumps(poll)
     resp = requests.post(API_ENDPOINT, poll_json)
     return f(resp)
