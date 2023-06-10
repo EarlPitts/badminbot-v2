@@ -32,15 +32,12 @@ def create_events(day, timezone):
     time_slots = map(create_slot, range(FIRST_HOUR, LAST_HOUR + 1))
     return map(lambda slot : create_event(day, slot), time_slots)
 
-def create_event(day, hour):
+def create_event(day, time):
     """
     Creates a single event option in the poll
     """
-    date_with_time = datetime.combine(day, hour)
-    offset = timedelta(hours=hour)
-    duration = timedelta(hours=1) # Length of each option
-    start = date_with_time + offset
-    end = date_with_time + offset + duration
+    start = datetime.combine(day, time)
+    end = start + timedelta(hours=1) # Length of each option duration
     return {
             "end_time": int(end.timestamp()),
             "start_time": int(start.timestamp()),
