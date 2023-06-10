@@ -1,4 +1,5 @@
 from datetime import timedelta
+import json
 
 def next_week(today):
     """
@@ -8,3 +9,18 @@ def next_week(today):
     next_monday = today + timedelta(days=next_weekday)
     _, week_number, _ = next_monday.isocalendar()
     return (week_number, map(lambda offset : next_monday + timedelta(offset), range(7)))
+
+def load_schedule(file_name):
+    with open(file_name) as f:
+        return json.loads(f.read())
+        
+def modify_schedule(days, file_name):
+    with open(file_name, 'w') as f:
+        f.write(json.dumps(days))
+
+def show_day(day):
+    days = ['Monday', 'Tuesday', 'Wednesday',
+            'Thursday', 'Friday', 'Saturday', 'Sunday']
+    return days[day]
+
+
