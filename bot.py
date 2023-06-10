@@ -53,6 +53,14 @@ intents.message_content = True
 
 bot = MyBot(command_prefix='!', intents=intents)
 
+@bot.listen()
+async def on_message(message):
+    """
+    Pin message containing the poll url
+    """
+    if message.author.id == bot.user.id and 'strawpoll.com' in message.content:
+        await message.pin()
+
 @bot.command()
 async def poll(ctx):
     if ctx.message.author.id == ADMIN:
