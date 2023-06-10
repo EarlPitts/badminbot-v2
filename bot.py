@@ -63,11 +63,13 @@ async def on_message(message):
 
 @bot.command()
 async def poll(ctx):
+    """Send the poll now"""
     if ctx.message.author.id == ADMIN:
         await bot.send_poll(force=True)
 
 @bot.command()
 async def schedule(ctx, *days: int):
+    """Modify next week's poll by specifying the days using numbers 0 to 6"""
     if ctx.message.author.id == ADMIN:
         bot.days = days # TODO Handle wrong input
         utils.modify_schedule(days, ACTIVE_DAYS_FILENAME)
