@@ -1,4 +1,5 @@
 from datetime import time, timedelta, timezone, date
+from random import randint
 import os
 
 from discord.ext import tasks, commands
@@ -14,12 +15,14 @@ ADMIN = int(os.environ["ADMIN"])
 UTC_2 = timezone(timedelta(hours=2))
 JOB_TIME = time(9,0,tzinfo=UTC_2)
 ACTIVE_DAYS_FILENAME = 'days.json'
+JOKES_FILENAME = 'jokes.txt'
 
 class MyBot(commands.Bot):
     """Sets up bot object (mainly for defining recurrent tasks)"""
 
     def __init__(self, *args, **kwargs):
         self.days = utils.load_schedule(ACTIVE_DAYS_FILENAME)
+        self.jokes = utils.load_jokes(JOKES_FILENAME)
         super().__init__(*args, **kwargs)
 
     async def setup_hook(self) -> None:
@@ -58,6 +61,11 @@ async def on_message(message):
         await message.pin()
     if message.author.id == ADMIN:
         await message.add_reaction("\u2764\uFE0F")
+
+@bot.command()
+async def joke(ctx):
+    """Tells a very funny joke"""
+    await ctx.send(bot.jokes[randint(0,99)])
 
 @bot.command()
 async def poll(ctx):

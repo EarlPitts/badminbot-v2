@@ -13,6 +13,10 @@ def next_week(today):
 def load_schedule(file_name):
     with open(file_name) as f:
         return json.loads(f.read())
+
+def load_jokes(file_name):
+    with open(file_name) as f:
+        return f.read().split('\n')
         
 def modify_schedule(days, file_name):
     with open(file_name, 'w') as f:
@@ -22,5 +26,3 @@ def show_day(day):
     days = ['Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday', 'Sunday']
     return days[day]
-
-
