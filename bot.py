@@ -56,6 +56,8 @@ async def on_message(message):
     """Pin message containing the poll url"""
     if message.author.id == bot.user.id and 'strawpoll.com' in message.content:
         await message.pin()
+    if message.author.id == ADMIN:
+        await message.add_reaction("\u2764\uFE0F")
 
 @bot.command()
 async def poll(ctx):
