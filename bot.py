@@ -16,9 +16,7 @@ JOB_TIME = time(9,0,tzinfo=UTC_2)
 ACTIVE_DAYS_FILENAME = 'days.json'
 
 class MyBot(commands.Bot):
-    """
-    Sets up bot object (mainly for defining recurrent tasks)
-    """
+    """Sets up bot object (mainly for defining recurrent tasks)"""
 
     def __init__(self, *args, **kwargs):
         self.days = utils.load_schedule(ACTIVE_DAYS_FILENAME)
@@ -55,9 +53,7 @@ bot = MyBot(command_prefix='!', intents=intents)
 
 @bot.listen()
 async def on_message(message):
-    """
-    Pin message containing the poll url
-    """
+    """Pin message containing the poll url"""
     if message.author.id == bot.user.id and 'strawpoll.com' in message.content:
         await message.pin()
 
@@ -66,6 +62,12 @@ async def poll(ctx):
     """Send the poll now"""
     if ctx.message.author.id == ADMIN:
         await bot.send_poll(force=True)
+
+@bot.command()
+async def get_schedule(ctx):
+    """Shows which days will be in the next poll"""
+    if ctx.message.author.id == ADMIN:
+        await ctx.send(f'Schedule for poll is: {list(map(utils.show_day, bot.days))}')
 
 @bot.command()
 async def schedule(ctx, *days: int):
