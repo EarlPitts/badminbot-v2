@@ -1,5 +1,6 @@
 from datetime import time, timedelta, timezone, date
 from random import randint
+from time import sleep
 import os
 
 from discord.ext import tasks, commands
@@ -85,5 +86,12 @@ async def schedule(ctx, *days: int):
         utils.modify_schedule(days, ACTIVE_DAYS_FILENAME)
         print(f'Schedule modified: {days}')
         await ctx.send(f'Schedule was modified to: {list(map(utils.show_day, days))}')
+
+@bot.command()
+async def call(ctx, target):
+    """Call's the reception of target"""
+    await ctx.send(f'Calling {target}...')
+    sleep(5)
+    await ctx.send(f'Unfortunately, no response...')
 
 bot.run(TOKEN)
