@@ -92,7 +92,7 @@ async def call(ctx, target):
     """Call's the reception of target"""
     await ctx.send(f'Calling {target}...')
     sleep(5)
-    if target == "Tüskecsarnok" or target == "Tüske":
+    if (target == "Tüskecsarnok" or target == "Tüske") and date.today().weekday() < 5:
         await ctx.send(f'They said they are full and then condescendingly reprimanded me for calling them in the first place during the working days of the week.')
     else:
         await ctx.send(f'Unfortunately, no response...')
