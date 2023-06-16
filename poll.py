@@ -5,7 +5,7 @@ import requests
 
 API_ENDPOINT = 'https://api.strawpoll.com/v3/polls'
 FIRST_HOUR = 7
-LAST_HOUR = 19
+LAST_HOUR = 21
 
 def create_poll(title, days, timezone):
     options = [e for es in days for e in create_events(es, timezone)]
