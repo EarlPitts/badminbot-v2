@@ -1,5 +1,5 @@
 from datetime import time, timedelta, timezone, date
-from random import randint
+from random import choice
 from time import sleep
 import os
 
@@ -64,7 +64,7 @@ async def on_message(message):
 @bot.command()
 async def joke(ctx):
     """Tells a very funny joke"""
-    await ctx.send(bot.jokes[randint(0,99)])
+    await ctx.send(choice(bot.jokes))
 
 @bot.command()
 async def poll(ctx):
