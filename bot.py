@@ -42,7 +42,9 @@ class MyBot(commands.Bot):
             week_num, days = utils.next_week(date.today())
             active_days = filter(active_day, days)
             title = f'Tollas (hét #{week_num})'
-            poll = create_poll(title, active_days, UTC_2)
+            start, end = self.config['time']
+            hours = range(start, end)
+            poll = create_poll(title, active_days, hours, UTC_2)
             url = send_poll_req(lambda resp : resp.json()['url'], poll)
             await channel.send(url)
 
@@ -86,6 +88,22 @@ async def schedule(ctx, *days: int):
         utils.modify_config(bot.config, CONFIG_FILENAME)
         print(f'Schedule modified: {days}')
         await ctx.send(f'Schedule was modified to: {list(map(utils.show_day, days))}')
+
+@bot.command()
+async def schedule_hours(ctx, *hours: int):
+    """Modify next week's poll by specifying time slots"""
+    if ctx.message.author.id == ADMIN:
+        bot.config['time'] = hours # TODO Handle wrong input
+        utils.modify_config(bot.config, CONFIG_FILENAME)
+        print(f'Timeslots modified: {hours[0]} - {hours[1]}')
+        await ctx.send(f'Timeslots were modified to: {hours[0]} - {hours[1]}')
+
+@bot.command()
+async def get_timeslots(ctx):
+    """Show timeslots for next poll"""
+    if ctx.message.author.id == ADMIN:
+        start, end = bot.config['time']
+        await ctx.send(f'Timeslots for poll: {start} - {end}')
 
 @bot.command()
 async def call(ctx, target):
