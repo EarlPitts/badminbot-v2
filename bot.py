@@ -15,14 +15,14 @@ ADMIN = int(os.environ["ADMIN"])
 
 UTC_2 = timezone(timedelta(hours=2))
 JOB_TIME = time(9,0,tzinfo=UTC_2)
-ACTIVE_DAYS_FILENAME = 'days.json'
+CONFIG_FILENAME = 'config.json'
 JOKES_FILENAME = 'jokes.txt'
 
 class MyBot(commands.Bot):
     """Sets up bot object (mainly for defining recurrent tasks)"""
 
     def __init__(self, *args, **kwargs):
-        self.days = utils.load_schedule(ACTIVE_DAYS_FILENAME)
+        self.config = utils.load_config(CONFIG_FILENAME)
         self.jokes = utils.load_jokes(JOKES_FILENAME)
         super().__init__(*args, **kwargs)
 
@@ -36,9 +36,9 @@ class MyBot(commands.Bot):
 
     @tasks.loop(time=JOB_TIME)
     async def send_poll(self, force=False):
-        if (date.today().weekday() == 4 or force is True) and self.days != []: # Send the poll only on Fridays
+        if (date.today().weekday() == 4 or force is True) and self.config['days'] != []: # Send the poll only on Fridays
             channel = self.get_channel(CHAN_ID)
-            active_day = lambda day: day.weekday() in self.days
+            active_day = lambda day: day.weekday() in self.config['days']
             week_num, days = utils.next_week(date.today())
             active_days = filter(active_day, days)
             title = f'Tollas (hét #{week_num})'
@@ -76,14 +76,14 @@ async def poll(ctx):
 async def get_schedule(ctx):
     """Shows which days will be in the next poll"""
     if ctx.message.author.id == ADMIN:
-        await ctx.send(f'Schedule for poll is: {list(map(utils.show_day, bot.days))}')
+        await ctx.send(f'Schedule for poll is: {list(map(utils.show_day, bot.config["days"]))}')
 
 @bot.command()
 async def schedule(ctx, *days: int):
     """Modify next week's poll by specifying the days using numbers 0 to 6"""
     if ctx.message.author.id == ADMIN:
-        bot.days = days # TODO Handle wrong input
-        utils.modify_schedule(days, ACTIVE_DAYS_FILENAME)
+        bot.config['days'] = days # TODO Handle wrong input
+        utils.modify_config(bot.config, CONFIG_FILENAME)
         print(f'Schedule modified: {days}')
         await ctx.send(f'Schedule was modified to: {list(map(utils.show_day, days))}')
 

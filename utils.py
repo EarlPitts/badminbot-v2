@@ -10,7 +10,7 @@ def next_week(today):
     _, week_number, _ = next_monday.isocalendar()
     return (week_number, map(lambda offset : next_monday + timedelta(offset), range(7)))
 
-def load_schedule(file_name):
+def load_config(file_name):
     with open(file_name) as f:
         return json.loads(f.read())
 
@@ -18,9 +18,9 @@ def load_jokes(file_name):
     with open(file_name) as f:
         return f.read().split('\n')
         
-def modify_schedule(days, file_name):
+def modify_config(new_conf, file_name):
     with open(file_name, 'w') as f:
-        f.write(json.dumps(days))
+        f.write(json.dumps(new_conf))
 
 def show_day(day):
     days = ['Monday', 'Tuesday', 'Wednesday',
