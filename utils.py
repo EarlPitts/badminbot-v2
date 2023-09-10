@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 import json
 
 def next_week(today):
@@ -26,3 +26,6 @@ def show_day(day):
     days = ['Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday', 'Sunday']
     return days[day]
+
+def is_friday():
+    return date.today().weekday() == 4

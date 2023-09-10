@@ -36,7 +36,7 @@ class MyBot(commands.Bot):
 
     @tasks.loop(time=JOB_TIME)
     async def send_poll(self, force=False):
-        if (date.today().weekday() == 4 or force is True) and self.config['days'] != []: # Send the poll only on Fridays
+        if (utils.is_friday() or force is True) and self.config['days'] != []: # Send the poll only on Fridays
             channel = self.get_channel(CHAN_ID)
             active_day = lambda day: day.weekday() in self.config['days']
             week_num, days = utils.next_week(date.today())
