@@ -90,6 +90,15 @@ async def schedule(ctx, *days: int):
         await ctx.send(f'Schedule was modified to: {list(map(utils.show_day, days))}')
 
 @bot.command()
+async def shutup(ctx):
+    """Temporarily turns off the polls"""
+    if ctx.message.author.id == ADMIN:
+        bot.config['days'] = []
+        utils.modify_config(bot.config, CONFIG_FILENAME)
+        print(f'Polls turned off')
+        await ctx.send(f'All right, turning off polls.')
+
+@bot.command()
 async def schedule_hours(ctx, *hours: int):
     """Modify next week's poll by specifying time slots"""
     if ctx.message.author.id == ADMIN:
