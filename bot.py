@@ -1,4 +1,4 @@
-from datetime import time, timedelta, timezone, date
+from datetime import time, date
 from random import choice
 from time import sleep
 import os
@@ -13,8 +13,7 @@ TOKEN = os.environ["TOKEN"]
 CHAN_ID = int(os.environ["CHAN_ID"])
 ADMIN = int(os.environ["ADMIN"])
 
-UTC_2 = timezone(timedelta(hours=2))
-JOB_TIME = time(9,0,tzinfo=UTC_2)
+JOB_TIME = time(9,0)
 CONFIG_FILENAME = 'config.json'
 JOKES_FILENAME = 'jokes.txt'
 
@@ -44,7 +43,7 @@ class MyBot(commands.Bot):
             title = f'Tollas (hét #{week_num})'
             start, end = self.config['time']
             hours = range(start, end)
-            poll = create_poll(title, active_days, hours, UTC_2)
+            poll = create_poll(title, active_days, hours)
             url = send_poll_req(lambda resp : resp.json()['url'], poll)
             await channel.send(url)
 
