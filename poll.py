@@ -5,8 +5,8 @@ import requests
 
 API_ENDPOINT = 'https://api.strawpoll.com/v3/polls'
 
-def create_poll(title, days, hours, timezone):
-    options = [e for es in days for e in create_events(es, hours, timezone)]
+def create_poll(title, days, hours):
+    options = [e for es in days for e in create_events(es, hours)]
     return {
             "title": title,
             "type": "meeting",
@@ -22,11 +22,11 @@ def create_poll(title, days, hours, timezone):
             "poll_options": options
             }
 
-def create_events(day, hours, timezone):
+def create_events(day, hours):
     """
     Creates the events for a given day
     """
-    create_slot = lambda h: time(h, 0, tzinfo=timezone)
+    create_slot = lambda h: time(h, 0)
     time_slots = map(create_slot, hours)
     return map(lambda slot : create_event(day, slot), time_slots)
 
