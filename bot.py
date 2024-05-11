@@ -1,17 +1,19 @@
 from datetime import time, date
 from random import choice
 from time import sleep
+from time import time as unixtime
 import os
 
 from discord.ext import tasks, commands
 import discord
 
-from poll import send_poll_req, create_poll
+from poll import *
 import utils
 
 TOKEN = os.environ["TOKEN"]
 CHAN_ID = int(os.environ["CHAN_ID"])
 ADMIN = int(os.environ["ADMIN"])
+STRAWPOLL_API_KEY = os.environ["STRAWPOLL_API_KEY"]
 
 JOB_TIME = time(9,0)
 CONFIG_FILENAME = 'config.json'
@@ -44,12 +46,22 @@ class MyBot(commands.Bot):
             start, end = self.config['time']
             hours = range(start, end)
             poll = create_poll(title, active_days, hours)
-            url = send_poll_req(lambda resp : resp.json()['url'], poll)
+            url = create_poll_req(lambda resp : resp.json()['url'], poll, STRAWPOLL_API_KEY)
             await channel.send(url)
 
     @send_poll.before_loop
     async def before_poll(self):
         await self.wait_until_ready()  # wait until the bot logs in
+
+    async def close_poll(self, id):
+        channel = self.get_channel(CHAN_ID)
+        poll = get_poll_req(lambda resp: resp.json(), id, STRAWPOLL_API_KEY)
+        poll['poll_config']['deadline_at'] = int(unixtime())
+        status = update_poll_req(lambda resp: resp.status_code, id, poll, STRAWPOLL_API_KEY)
+        if status == 200:
+            await channel.send('Sure thing, I closed it!')
+        else:
+            await channel.send("Sorry, I just can't do it. :(")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -72,6 +84,12 @@ async def poll(ctx):
     """Send the poll now"""
     if ctx.message.author.id == ADMIN:
         await bot.send_poll(force=True)
+
+@bot.command()
+async def close_poll(ctx, id: str):
+    """Close the given poll"""
+    if ctx.message.author.id == ADMIN:
+        await bot.close_poll(id)
 
 @bot.command()
 async def get_schedule(ctx):

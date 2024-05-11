@@ -8,6 +8,7 @@ Discord bot for automatically creating polls.
 
 - `help`: Help message
 - `poll`: Forces the poll manually
+- `close_poll <id>`: Closes the poll given by its ID (the last part of the url)
 - `schedule <weekday_nums>`: Reschedules the poll for the next week, weekdays are 0-6
 - `schedule hours <start> <end>`: Reschedules the poll for the next week, `start` and `end` are hours
 - `shutup`: Turns off the polls

@@ -42,12 +42,21 @@ def create_event(day, time):
             "type": "time_range"
             }
 
-
-def send_poll_req(f, poll):
+def create_poll_req(f, poll, STRAWPOLL_API_KEY):
     """
     Sends the poll request
     f is the function that will be called with the response
     """
-    poll_json = json.dumps(poll)
-    resp = requests.post(API_ENDPOINT, poll_json)
+    headers = {'X-API-Key':  STRAWPOLL_API_KEY}
+    resp = requests.post(API_ENDPOINT, headers=headers, json=poll)
+    return f(resp)
+
+def update_poll_req(f, id, poll, STRAWPOLL_API_KEY):
+    headers = {'X-API-Key':  STRAWPOLL_API_KEY}
+    resp = requests.put(f'{API_ENDPOINT}/{id}', headers=headers, json=poll)
+    return f(resp)
+#
+def get_poll_req(f, id, STRAWPOLL_API_KEY):
+    headers = {'X-API-Key':  STRAWPOLL_API_KEY}
+    resp = requests.get(f'{API_ENDPOINT}/{id}', headers=headers)
     return f(resp)
