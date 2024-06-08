@@ -7,6 +7,7 @@ import os
 from discord.ext import tasks, commands
 import discord
 
+from chatbot import chat
 from poll import *
 import utils
 
@@ -67,6 +68,14 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = MyBot(command_prefix='!', intents=intents)
+
+@bot.listen()
+async def on_message(message):
+    """Sends message to local model if the bot is mentioned"""
+    if bot.user in message.mentions:
+        async with message.channel.typing():
+            resp = chat(message.content)
+            await message.reply(resp)
 
 @bot.listen()
 async def on_message(message):
