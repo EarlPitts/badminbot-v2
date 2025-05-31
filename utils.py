@@ -29,3 +29,6 @@ def show_day(day):
 
 def is_friday():
     return date.today().weekday() == 4
+
+def is_thursday():
+    return date.today().weekday() == 3
